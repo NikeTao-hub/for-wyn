@@ -1,0 +1,3476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width,
+    initial-scale=1,
+    maximum-scale=1,
+    user-scalable=no,
+    viewport-fit=cover"
+>
+
+<meta
+    name="theme-color"
+    content="#050816"
+>
+
+<title>给你的一颗星</title>
+
+
+<style>
+
+/* ============================================================
+   基础
+============================================================ */
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+
+    margin:0;
+
+    width:100%;
+    height:100%;
+
+    overflow:hidden;
+
+    background:#050816;
+
+    color:#fff;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "PingFang SC",
+        "Hiragino Sans GB",
+        "Microsoft YaHei",
+        sans-serif;
+
+}
+
+
+/* ============================================================
+   App
+============================================================ */
+
+#app{
+
+    position:fixed;
+
+    inset:0;
+
+    overflow:hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 42%,
+            #111b43 0%,
+            #080c25 42%,
+            #03040d 100%
+        );
+
+}
+
+
+/* ============================================================
+   Canvas
+============================================================ */
+
+canvas{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    display:block;
+
+}
+
+
+/* ============================================================
+   Scene
+============================================================ */
+
+.scene{
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    padding:
+        28px
+        24px;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:
+        opacity 1s ease;
+
+    z-index:2;
+
+}
+
+
+.scene.active{
+
+    opacity:1;
+
+    pointer-events:auto;
+
+}
+
+
+/* ============================================================
+   文本
+============================================================ */
+
+.text{
+
+    font-size:
+        clamp(
+            21px,
+            6vw,
+            34px
+        );
+
+    line-height:1.75;
+
+    font-weight:400;
+
+    max-width:92vw;
+
+    text-shadow:
+        0 2px 20px
+        rgba(
+            130,
+            170,
+            255,
+            .25
+        );
+
+}
+
+
+.title{
+
+    font-size:
+        clamp(
+            30px,
+            9vw,
+            50px
+        );
+
+    font-weight:600;
+
+    line-height:1.45;
+
+    text-shadow:
+        0 0 30px
+        rgba(
+            255,
+            150,
+            190,
+            .25
+        );
+
+}
+
+
+.small{
+
+    font-size:15px;
+
+    color:#b9c1dc;
+
+    letter-spacing:2px;
+
+    margin-top:18px;
+
+}
+
+
+.cursor:after{
+
+    content:"|";
+
+    animation:
+        blink 1s infinite;
+
+}
+
+
+@keyframes blink{
+
+    50%{
+        opacity:0;
+    }
+
+}
+
+
+/* ============================================================
+   开始页面
+============================================================ */
+
+#start{
+
+    z-index:10;
+
+    background:
+        rgba(
+            5,
+            8,
+            22,
+            .48
+        );
+
+    backdrop-filter:
+        blur(8px);
+
+}
+
+
+.start-card{
+
+    width:
+        min(
+            88vw,
+            430px
+        );
+
+    padding:
+        36px
+        24px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            .13
+        );
+
+    border-radius:26px;
+
+    background:
+        rgba(
+            12,
+            18,
+            48,
+            .68
+        );
+
+    box-shadow:
+        0 20px 80px
+        rgba(
+            0,
+            0,
+            0,
+            .45
+        );
+
+}
+
+
+.start-card h1{
+
+    font-size:34px;
+
+    margin:
+        0 0 14px;
+
+}
+
+
+.start-card p{
+
+    color:#bdc6df;
+
+    line-height:1.8;
+
+    margin:
+        0 0 26px;
+
+}
+
+
+/* ============================================================
+   Button
+============================================================ */
+
+button{
+
+    border:0;
+
+    border-radius:999px;
+
+    padding:
+        14px
+        32px;
+
+    font-size:17px;
+
+    color:#fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff86b0,
+            #c76dff
+        );
+
+    box-shadow:
+        0 8px 30px
+        rgba(
+            230,
+            100,
+            180,
+            .28
+        );
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+
+}
+
+
+button:active{
+
+    transform:
+        scale(.95);
+
+}
+
+
+/* ============================================================
+   照片
+============================================================ */
+
+.photo-wrap{
+
+    width:
+        min(
+            86vw,
+            390px
+        );
+
+    min-height:0;
+
+    padding:
+        13px
+        13px
+        52px;
+
+    background:#f5f4ee;
+
+    border-radius:5px;
+
+    box-shadow:
+        0 20px 60px
+        rgba(
+            0,
+            0,
+            0,
+            .45
+        );
+
+    color:#333;
+
+    transform:
+        rotate(-2deg);
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+}
+
+
+.photo-wrap img{
+
+    display:block;
+
+    width:100%;
+
+    height:auto;
+
+    max-width:100%;
+
+    max-height:
+        58vh;
+
+    object-fit:contain;
+
+    object-position:center;
+
+    background:#1b2038;
+
+}
+
+
+/* ============================================================
+   照片文字
+============================================================ */
+
+.caption{
+
+    font-size:
+        clamp(
+            12px,
+            3.3vw,
+            14px
+        );
+
+    line-height:1.5;
+
+    margin-top:13px;
+
+    letter-spacing:1px;
+
+    text-align:center;
+
+}
+
+
+/* ============================================================
+   Question
+============================================================ */
+
+#question{
+
+    flex-direction:column;
+
+    /*
+       给按钮逃跑预留整个屏幕空间
+    */
+
+    overflow:hidden;
+
+}
+
+
+#question .text{
+
+    margin-bottom:28px;
+
+}
+
+
+.answer-row{
+
+    display:flex;
+
+    gap:14px;
+
+    /*
+       让“让我想想”脱离普通布局后，
+       可以在整个 question 区域内自由移动。
+    */
+
+    position:relative;
+
+    width:100%;
+
+    justify-content:center;
+
+}
+
+
+#yes{
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff709d,
+            #ff4f82
+        );
+
+}
+
+
+#think{
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            .1
+        );
+
+    box-shadow:none;
+
+    /*
+       初始位置保持原来的 flex 布局。
+       第一次点击之前绝不改变位置。
+    */
+
+    position:relative;
+
+    z-index:20;
+
+}
+
+
+/* ============================================================
+   让我想想 —— 逃跑提示
+============================================================ */
+
+#thinkHint{
+
+    position:absolute;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    bottom:calc(50% - 150px);
+
+    width:90vw;
+
+    pointer-events:none;
+
+    font-size:16px;
+
+    color:
+        rgba(
+            255,
+            220,
+            235,
+            .92
+        );
+
+    text-shadow:
+        0 0 14px
+        rgba(
+            255,
+            100,
+            170,
+            .45
+        );
+
+    opacity:0;
+
+    transition:
+        opacity .35s ease;
+
+    z-index:30;
+
+}
+
+
+#thinkHint.show{
+
+    opacity:1;
+
+}
+
+
+/* ============================================================
+   按钮逃跑动画
+============================================================ */
+
+#think.running{
+
+    position:fixed;
+
+    margin:0;
+
+    transition:
+        left .22s cubic-bezier(
+            .2,
+            .8,
+            .2,
+            1
+        ),
+        top .22s cubic-bezier(
+            .2,
+            .8,
+            .2,
+            1
+        );
+
+}
+
+
+/*
+   第 4～8 次的第二次逃跑：
+
+   第一次跑得比较快，
+   第二次延迟一点再突然跑。
+
+   所以视觉上会产生：
+
+   “我已经快点到了——
+    欸？怎么又跑了？”
+*/
+
+#think.escape-again{
+
+    transition:
+        left .16s cubic-bezier(
+            .1,
+            .9,
+            .2,
+            1
+        ),
+        top .16s cubic-bezier(
+            .1,
+            .9,
+            .2,
+            1
+        );
+
+}
+
+
+/* ============================================================
+   最终页面
+============================================================ */
+
+#final{
+
+    flex-direction:column;
+
+}
+
+
+#final .text{
+
+    max-width:92vw;
+
+}
+
+
+/* ============================================================
+   粒子星星文字
+============================================================ */
+
+#heartText{
+
+    position:absolute;
+
+    inset:0;
+
+    z-index:6;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    pointer-events:none;
+
+    opacity:0;
+
+    transition:
+        opacity 1.8s ease;
+
+    text-align:center;
+
+}
+
+
+#heartText.show{
+
+    opacity:1;
+
+}
+
+
+/* ============================================================
+   一直爱你
+============================================================ */
+
+.heart-main{
+
+    font-size:
+        clamp(
+            36px,
+            10vw,
+            58px
+        );
+
+    font-weight:600;
+
+    letter-spacing:4px;
+
+    color:#fff;
+
+    text-shadow:
+
+        0 0 10px
+        rgba(
+            255,
+            150,
+            190,
+            .85
+        ),
+
+        0 0 30px
+        rgba(
+            255,
+            90,
+            160,
+            .65
+        ),
+
+        0 0 70px
+        rgba(
+            255,
+            80,
+            160,
+            .35
+        );
+
+    animation:
+        heartTextPulse 2.5s
+        ease-in-out
+        infinite;
+
+}
+
+
+/* ============================================================
+   涛涛 ❤️ 小宁
+============================================================ */
+
+.heart-sub{
+
+    margin-top:18px;
+
+    font-size:
+        clamp(
+            15px,
+            4vw,
+            20px
+        );
+
+    letter-spacing:4px;
+
+    color:
+        rgba(
+            255,
+            220,
+            235,
+            .92
+        );
+
+    text-shadow:
+
+        0 0 12px
+        rgba(
+            255,
+            120,
+            180,
+            .55
+        );
+
+}
+
+
+@keyframes heartTextPulse{
+
+    0%,
+    100%{
+
+        transform:
+            scale(1);
+
+    }
+
+    50%{
+
+        transform:
+            scale(1.035);
+
+    }
+
+}
+
+
+/* ============================================================
+   小屏幕优化
+============================================================ */
+
+@media(
+    max-height:700px
+){
+
+    .photo-wrap{
+
+        width:
+            min(
+                84vw,
+                350px
+            );
+
+        padding:
+            10px
+            10px
+            45px;
+
+    }
+
+
+    .photo-wrap img{
+
+        max-height:
+            52vh;
+
+    }
+
+
+    .caption{
+
+        margin-top:9px;
+
+    }
+
+}
+
+
+
+
+/* ============================================================
+   彩蛋图片
+============================================================ */
+
+#giftBox{
+
+    position:absolute;
+
+    inset:0;
+
+    z-index:20;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+        rgba(0,0,0,.55);
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:
+        opacity 1.5s ease;
+
+}
+
+
+#giftBox.show{
+
+    opacity:1;
+
+    pointer-events:auto;
+
+}
+
+
+#giftBox img{
+
+    width:min(85vw,420px);
+
+    max-height:75vh;
+
+    object-fit:contain;
+
+    border-radius:20px;
+
+    box-shadow:
+        0 0 60px
+        rgba(255,150,200,.8);
+
+    transform:
+        translateY(80px)
+        scale(.8);
+
+    animation:
+        giftIn 1.5s ease forwards;
+
+}
+
+
+@keyframes giftIn{
+
+    0%{
+        transform:
+            translateY(80px)
+            scale(.8);
+        opacity:0;
+    }
+
+    100%{
+        transform:
+            translateY(0)
+            scale(1);
+        opacity:1;
+    }
+
+}
+
+
+
+/* 星星结尾优化 */
+.heart-main{
+    white-space:pre-line;
+}
+
+.heart-sub{
+    white-space:pre-line;
+}
+</style>
+
+</head>
+
+
+<body>
+
+
+<div id="app">
+
+
+<!-- ==========================================================
+     星空 Canvas
+=========================================================== -->
+
+<canvas id="stars"></canvas>
+
+
+<!-- ==========================================================
+     开始
+=========================================================== -->
+
+<div
+    id="start"
+    class="scene active"
+>
+
+    <div class="start-card">
+
+        <h1>
+            给小宁的一封信
+        </h1>
+
+        <p>
+            这是我写给你的。<br>
+            建议戴上耳机，一个人慢慢看。
+        </p>
+
+        <button id="begin">
+            点这里开始 ❤️
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================================
+     文字场景
+=========================================================== -->
+
+<divß
+    id="scene"
+    class="scene"
+>
+
+    <div
+        id="message"
+        class="text"
+    ></div>
+
+</div>
+
+
+<!-- ==========================================================
+     照片
+=========================================================== -->
+
+<div
+    id="photo"
+    class="scene"
+>
+
+    <div class="photo-wrap">
+
+        <img
+            id="photoImg"
+            src=""
+            alt=""
+        >
+
+        <div
+            id="photoCaption"
+            class="caption"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================================
+     问题
+=========================================================== -->
+
+<div
+    id="question"
+    class="scene"
+>
+
+    <div class="text">
+
+        所以，小宁。<br><br>
+
+        原谅我，好不好？
+
+    </div>
+
+
+    <div class="answer-row">
+
+        <button id="yes">
+            好 ❤️
+        </button>
+
+        <button id="think">
+            让我想想
+        </button>
+
+    </div>
+
+
+    <!--
+       每次点击后的调皮提示
+    -->
+
+    <div id="thinkHint"></div>
+
+</div>
+
+
+<!-- ==========================================================
+     最终
+=========================================================== -->
+
+<div
+    id="final"
+    class="scene"
+>
+
+</div>
+
+
+<!-- ==========================================================
+     粒子星星文字
+=========================================================== -->
+
+<div id="heartText">
+
+    <div class="heart-main">
+        很幸运遇见你
+    </div>
+
+    <div class="heart-sub">
+        希望我们
+可以慢慢靠近
+    </div>
+
+</div>
+
+
+<!-- ==========================================================
+     彩蛋图片
+=========================================================== -->
+
+<div id="giftBox">
+
+    <img src="assets/gift.jpg" alt="彩蛋">
+
+</div>
+
+
+<!-- ==========================================================
+     音乐
+=========================================================== -->
+
+<audio
+    id="music"
+    src="assets/music.mp3"
+    loop
+    preload="auto"
+></audio>
+
+
+</div>
+
+
+<script>
+
+
+/* ============================================================
+   Canvas
+============================================================ */
+
+const canvas =
+    document.getElementById(
+        "stars"
+    );
+
+const ctx =
+    canvas.getContext(
+        "2d"
+    );
+
+
+let W = 0;
+
+let H = 0;
+
+let DPR = 1;
+
+
+/* ============================================================
+   全局动画状态
+============================================================ */
+
+let stars = [];
+
+let meteors = [];
+
+let heartParticles = [];
+
+let heartMode = false;
+
+let meteorRain = false;
+
+
+/* ============================================================
+   Resize
+============================================================ */
+
+function resize(){
+
+    DPR =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
+
+
+    W =
+        window.innerWidth;
+
+
+    H =
+        window.innerHeight;
+
+
+    canvas.width =
+        W * DPR;
+
+
+    canvas.height =
+        H * DPR;
+
+
+    canvas.style.width =
+        W + "px";
+
+
+    canvas.style.height =
+        H + "px";
+
+
+    ctx.setTransform(
+        DPR,
+        0,
+        0,
+        DPR,
+        0,
+        0
+    );
+
+
+    createStars();
+
+}
+
+
+window.addEventListener(
+    "resize",
+    resize
+);
+
+
+/* ============================================================
+   Star
+============================================================ */
+
+class Star{
+
+
+    constructor(){
+
+        this.reset();
+
+    }
+
+
+    reset(){
+
+        this.x =
+            Math.random() * W;
+
+        this.y =
+            Math.random() * H;
+
+
+        const radii = [
+
+            .6,
+            .8,
+            1,
+            1,
+            1.3,
+            1.7
+
+        ];
+
+
+        this.r =
+            radii[
+                Math.floor(
+                    Math.random() *
+                    radii.length
+                )
+            ];
+
+
+        this.phase =
+            Math.random() *
+            Math.PI * 2;
+
+
+        this.speed =
+            .4 +
+            Math.random() *
+            1.0;
+
+    }
+
+
+    draw(t){
+
+        const glow =
+            .55 +
+            .45 *
+            Math.sin(
+                t *
+                this.speed +
+                this.phase
+            );
+
+
+        const radius =
+            Math.max(
+                1,
+                Math.floor(
+                    this.r *
+                    (
+                        .8 +
+                        glow * .35
+                    )
+                )
+            );
+
+
+        const alpha =
+            110 +
+            145 *
+            glow;
+
+
+        if(
+            radius >= 2
+        ){
+
+            const gradient =
+                ctx.createRadialGradient(
+                    this.x,
+                    this.y,
+                    0,
+                    this.x,
+                    this.y,
+                    radius * 5
+                );
+
+
+            gradient.addColorStop(
+                0,
+                `rgba(
+                    245,
+                    248,
+                    255,
+                    ${alpha / 255}
+                )`
+            );
+
+
+            gradient.addColorStop(
+                .25,
+                `rgba(
+                    220,
+                    230,
+                    255,
+                    ${alpha / 700}
+                )`
+            );
+
+
+            gradient.addColorStop(
+                1,
+                "rgba(200,220,255,0)"
+            );
+
+
+            ctx.fillStyle =
+                gradient;
+
+
+            ctx.beginPath();
+
+
+            ctx.arc(
+                this.x,
+                this.y,
+                radius * 5,
+                0,
+                Math.PI * 2
+            );
+
+
+            ctx.fill();
+
+        }
+
+
+        ctx.fillStyle =
+            `rgba(
+                245,
+                248,
+                255,
+                ${alpha / 255}
+            )`;
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+            this.x,
+            this.y,
+            radius,
+            0,
+            Math.PI * 2
+        );
+
+
+        ctx.fill();
+
+    }
+
+}
+
+
+/* ============================================================
+   Shooting Star
+============================================================ */
+
+class ShootingStar{
+
+
+    constructor(
+        delay = 0
+    ){
+
+        this.delay =
+            delay;
+
+        this.reset();
+
+    }
+
+
+    reset(){
+
+        this.x =
+            W *
+            (
+                .55 +
+                Math.random() *
+                .65
+            );
+
+
+        this.y =
+            -50 -
+            Math.random() *
+            H * .35;
+
+
+        const speed =
+            .85 +
+            Math.random() *
+            .65;
+
+
+        this.vx =
+            -(
+                5 +
+                Math.random() * 4
+            ) *
+            speed;
+
+
+        this.vy =
+            (
+                4 +
+                Math.random() * 3.5
+            ) *
+            speed;
+
+
+        this.life = 0;
+
+
+        this.maxLife =
+            32 +
+            Math.random() * 32;
+
+
+        this.active = false;
+
+
+        this.size =
+            1.5 +
+            Math.random() * 1.5;
+
+    }
+
+
+    update(){
+
+        if(
+            this.delay > 0
+        ){
+
+            this.delay--;
+
+            return;
+
+        }
+
+
+        this.active = true;
+
+
+        this.x +=
+            this.vx;
+
+
+        this.y +=
+            this.vy;
+
+
+        this.life++;
+
+
+        if(
+            this.life >
+            this.maxLife ||
+            this.x < -150 ||
+            this.y > H + 150
+        ){
+
+            this.reset();
+
+
+            this.delay =
+                meteorRain
+                ?
+                Math.random() * 15
+                :
+                45 +
+                Math.random() * 100;
+
+        }
+
+    }
+
+
+    draw(){
+
+        if(
+            !this.active ||
+            this.delay > 0
+        ){
+
+            return;
+
+        }
+
+
+        const fade =
+            Math.max(
+                0,
+                1 -
+                this.life /
+                this.maxLife
+            );
+
+
+        const length =
+            60 +
+            90 *
+            fade;
+
+
+        const endX =
+            this.x -
+            this.vx *
+            length /
+            6;
+
+
+        const endY =
+            this.y -
+            this.vy *
+            length /
+            6;
+
+
+        const gradient =
+            ctx.createLinearGradient(
+                this.x,
+                this.y,
+                endX,
+                endY
+            );
+
+
+        gradient.addColorStop(
+            0,
+            `rgba(
+                255,
+                255,
+                255,
+                ${.95 * fade}
+            )`
+        );
+
+
+        gradient.addColorStop(
+            .15,
+            `rgba(
+                255,
+                245,
+                220,
+                ${.7 * fade}
+            )`
+        );
+
+
+        gradient.addColorStop(
+            .5,
+            `rgba(
+                255,
+                220,
+                230,
+                ${.25 * fade}
+            )`
+        );
+
+
+        gradient.addColorStop(
+            1,
+            "rgba(255,180,220,0)"
+        );
+
+
+        ctx.strokeStyle =
+            gradient;
+
+
+        ctx.lineWidth =
+            1.6;
+
+
+        ctx.lineCap =
+            "round";
+
+
+        ctx.beginPath();
+
+
+        ctx.moveTo(
+            this.x,
+            this.y
+        );
+
+
+        ctx.lineTo(
+            endX,
+            endY
+        );
+
+
+        ctx.stroke();
+
+
+        ctx.shadowBlur =
+            12;
+
+
+        ctx.shadowColor =
+            "rgba(255,245,230,.95)";
+
+
+        ctx.fillStyle =
+            `rgba(
+                255,
+                255,
+                255,
+                ${fade}
+            )`;
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+            this.x,
+            this.y,
+            this.size,
+            0,
+            Math.PI * 2
+        );
+
+
+        ctx.fill();
+
+
+        ctx.shadowBlur = 0;
+
+    }
+
+}
+
+
+/* ============================================================
+   创建星空
+============================================================ */
+
+function createStars(){
+
+    stars = [];
+
+
+    for(
+        let i = 0;
+        i < 260;
+        i++
+    ){
+
+        stars.push(
+            new Star()
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   创建流星
+============================================================ */
+
+function createMeteors(){
+
+    meteors = [];
+
+
+    for(
+        let i = 0;
+        i < 8;
+        i++
+    ){
+
+        meteors.push(
+            new ShootingStar(
+                Math.random() * 240
+            )
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   Heart Points
+============================================================ */
+
+function starPoints(
+    cx,
+    cy,
+    scale,
+    n = 250
+){
+
+    const points = [];
+
+    for(let i=0;i<n;i++){
+
+        const angle = Math.PI * 2 * i / n;
+        const radius = (i % 2 === 0) ? 1 : .42;
+
+        points.push({
+            x: cx + Math.cos(angle) * 90 * scale * radius,
+            y: cy + Math.sin(angle) * 90 * scale * radius
+        });
+    }
+
+    return points;
+}
+
+
+/* ============================================================
+   Particle
+============================================================ */
+
+class Particle{
+
+
+    constructor(
+        x,
+        y,
+        targetX,
+        targetY
+    ){
+
+        this.x =
+            x;
+
+        this.y =
+            y;
+
+        this.tx =
+            targetX;
+
+        this.ty =
+            targetY;
+
+
+        this.vx =
+            -1.5 +
+            Math.random() * 3;
+
+
+        this.vy =
+            -1.5 +
+            Math.random() * 3;
+
+
+        this.life =
+            70 +
+            Math.floor(
+                Math.random() * 60
+            );
+
+
+        this.phase =
+            Math.random() *
+            Math.PI * 2;
+
+
+        this.size =
+            1.2 +
+            Math.random() * 1.6;
+
+    }
+
+
+    update(){
+
+        const dx =
+            this.tx -
+            this.x;
+
+
+        const dy =
+            this.ty -
+            this.y;
+
+
+        this.vx +=
+            dx * .003;
+
+
+        this.vy +=
+            dy * .003;
+
+
+        this.vx *=
+            .94;
+
+
+        this.vy *=
+            .94;
+
+
+        this.x +=
+            this.vx;
+
+
+        this.y +=
+            this.vy;
+
+
+        this.life--;
+
+
+        if(
+            this.life <= 0
+        ){
+
+            this.life =
+                90 +
+                Math.random() * 40;
+
+        }
+
+    }
+
+
+    draw(t){
+
+        let alpha =
+            Math.min(
+                255,
+                this.life * 3
+            );
+
+
+        const pulse =
+            .82 +
+            .18 *
+            Math.sin(
+                t * 3 +
+                this.phase
+            );
+
+
+        alpha *=
+            pulse;
+
+
+        ctx.shadowBlur =
+            5;
+
+
+        ctx.shadowColor =
+            "rgba(255,100,170,.8)";
+
+
+        ctx.fillStyle =
+            `rgba(
+                255,
+                150,
+                190,
+                ${alpha / 255}
+            )`;
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+            this.x,
+            this.y,
+            this.size,
+            0,
+            Math.PI * 2
+        );
+
+
+        ctx.fill();
+
+
+        ctx.shadowBlur = 0;
+
+    }
+
+}
+
+
+/* ============================================================
+   星尘外围粒子
+============================================================ */
+
+class FloatingHeartParticle{
+
+
+    constructor(){
+
+        this.x =
+            W / 2 +
+            (
+                Math.random() - .5
+            ) *
+            W;
+
+        this.y =
+            H / 2 +
+            (
+                Math.random() - .5
+            ) *
+            H;
+
+
+        this.vx =
+            (
+                Math.random() - .5
+            ) * .25;
+
+
+        this.vy =
+            -.15 -
+            Math.random() * .35;
+
+
+        this.size =
+            .6 +
+            Math.random() * 1.4;
+
+
+        this.alpha =
+            .15 +
+            Math.random() * .35;
+
+
+        this.phase =
+            Math.random() *
+            Math.PI * 2;
+
+    }
+
+
+    update(){
+
+        this.x +=
+            this.vx;
+
+
+        this.y +=
+            this.vy;
+
+
+        if(
+            this.y < -10
+        ){
+
+            this.y =
+                H + 10;
+
+        }
+
+    }
+
+
+    draw(t){
+
+        const pulse =
+            .7 +
+            .3 *
+            Math.sin(
+                t * 2 +
+                this.phase
+            );
+
+
+        ctx.fillStyle =
+            `rgba(
+                255,
+                130,
+                180,
+                ${this.alpha * pulse}
+            )`;
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+            this.x,
+            this.y,
+            this.size,
+            0,
+            Math.PI * 2
+        );
+
+
+        ctx.fill();
+
+    }
+
+}
+
+
+let floatingParticles = [];
+
+
+/* ============================================================
+   创建粒子爱心
+============================================================ */
+
+function createHeart(){
+
+    heartParticles = [];
+
+
+    const scale =
+        Math.min(
+            W,
+            H
+        ) / 42;
+
+
+    const points =
+        starPoints(
+            W / 2,
+            H / 2 - 20,
+            scale,
+            260
+        );
+
+
+    for(
+        const point
+        of points
+    ){
+
+        const startX =
+            Math.random() *
+            W;
+
+
+        const startY =
+            Math.random() *
+            H;
+
+
+        heartParticles.push(
+            new Particle(
+                startX,
+                startY,
+                point.x,
+                point.y
+            )
+        );
+
+    }
+
+
+    floatingParticles = [];
+
+
+    for(
+        let i = 0;
+        i < 120;
+        i++
+    ){
+
+        floatingParticles.push(
+            new FloatingHeartParticle()
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   绘制粒子爱心
+============================================================ */
+
+function drawHeart(t){
+
+    for(
+        const particle
+        of floatingParticles
+    ){
+
+        particle.update();
+
+        particle.draw(t);
+
+    }
+
+
+    const heartbeat =
+        1 +
+        Math.sin(
+            t * 2.5
+        ) *
+        .018;
+
+
+    for(
+        const particle
+        of heartParticles
+    ){
+
+        particle.update();
+
+
+        const originalX =
+            particle.x;
+
+
+        const originalY =
+            particle.y;
+
+
+        particle.x =
+            W / 2 +
+            (
+                particle.x -
+                W / 2
+            ) *
+            heartbeat;
+
+
+        particle.y =
+            H / 2 +
+            (
+                particle.y -
+                H / 2
+            ) *
+            heartbeat;
+
+
+        particle.draw(t);
+
+
+        particle.x =
+            originalX;
+
+
+        particle.y =
+            originalY;
+
+    }
+
+}
+
+
+/* ============================================================
+   背景
+============================================================ */
+
+function drawBackground(){
+
+    ctx.fillStyle =
+        "#050816";
+
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    const gradient =
+        ctx.createRadialGradient(
+            W * .5,
+            H * .42,
+            0,
+            W * .5,
+            H * .42,
+            Math.max(
+                W,
+                H
+            ) * .72
+        );
+
+
+    gradient.addColorStop(
+        0,
+        "rgba(38,50,120,.20)"
+    );
+
+
+    gradient.addColorStop(
+        .35,
+        "rgba(30,35,95,.10)"
+    );
+
+
+    gradient.addColorStop(
+        1,
+        "rgba(5,8,22,0)"
+    );
+
+
+    ctx.fillStyle =
+        gradient;
+
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+}
+
+
+/* ============================================================
+   主动画
+============================================================ */
+
+function animationLoop(
+    timestamp
+){
+
+    const t =
+        timestamp / 1000;
+
+
+    drawBackground();
+
+
+    for(
+        const star
+        of stars
+    ){
+
+        star.draw(t);
+
+    }
+
+
+    for(
+        const meteor
+        of meteors
+    ){
+
+        meteor.update();
+
+        meteor.draw();
+
+    }
+
+
+    if(
+        heartMode &&
+        heartParticles.length > 0
+    ){
+
+        drawHeart(t);
+
+    }
+
+
+    requestAnimationFrame(
+        animationLoop
+    );
+
+}
+
+
+/* ============================================================
+   Scenes
+============================================================ */
+
+const scenes = {
+
+    start:
+        document.getElementById(
+            "start"
+        ),
+
+    scene:
+        document.getElementById(
+            "scene"
+        ),
+
+    photo:
+        document.getElementById(
+            "photo"
+        ),
+
+    question:
+        document.getElementById(
+            "question"
+        ),
+
+    final:
+        document.getElementById(
+            "final"
+        )
+
+};
+
+
+function show(name){
+
+    Object.values(
+        scenes
+    ).forEach(
+        element => {
+
+            element.classList.remove(
+                "active"
+            );
+
+        }
+    );
+
+
+    scenes[name]
+        .classList.add(
+            "active"
+        );
+
+}
+
+
+/* ============================================================
+   文案
+============================================================ */
+
+const messages = [
+
+    [
+        "To 小宁",
+        "title"
+    ],
+
+    [
+        "那天的夜晚，有一点特别",
+        "normal"
+    ],
+
+    [
+        "我们因小红书的一个聊天认识",
+        "normal"
+    ],
+
+    [
+        "从一场游戏开始，到后来聊了很多很多",
+        "normal"
+    ],
+
+    [
+        "你曾经说：",
+        "normal"
+    ],
+
+    [
+        "摩羯和金牛是绝配星座",
+        "title"
+    ],
+
+    [
+        "我不懂星座，但懂得珍惜缘分",
+        "normal"
+    ],
+
+    [
+        "其实，有一句话我一直想告诉你",
+        "normal"
+    ],
+
+    [
+        "我很喜欢你",
+        "title"
+    ],
+
+    [
+        "喜欢你的热情，乐观，三观",
+        "normal"
+    ],
+
+    [
+        "后来慢慢了解你以后",
+        "normal"
+    ],
+
+    [
+        "我发现吸引我的，不只是你的这些",
+        "normal"
+    ],
+
+    [
+        "还有你对待身边人的真诚",
+        "normal"
+    ],
+
+    [
+        "你有一颗金子般的心，真诚、有灵性",
+        "title"
+    ],
+
+    [
+        "也有敏感、柔软、需要被理解的一面",
+        "normal"
+    ],
+
+    [
+        "我希望开心的时候，我可以成为那个分享的人",
+        "normal"
+    ],
+
+    [
+        "难过的时候，也可以陪你聊聊天",
+        "normal"
+    ],
+
+    [
+        "虽然过去老惹你生气，让你伤心",
+        "normal"
+    ],
+
+    [
+        "但我不会辜负这份情谊",
+        "normal"
+    ],
+    [
+        "我希望，我们可以慢慢认识彼此",
+        "normal"
+    ],
+
+    [
+        "不是因为害怕靠近你",
+        "normal"
+    ],
+
+    [
+        "而是因为在乎，所以想认真一点",
+        "title"
+    ],
+
+    [
+        "希望未来的某一天回头看",
+        "normal"
+    ],
+
+    [
+        "我们会觉得，认识彼此是一件很幸运的事情",
+        "title"
+    ]
+
+];
+
+
+/* ============================================================
+   Wait
+============================================================ */
+
+function wait(ms){
+
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                ms
+            )
+    );
+
+}
+
+
+/* ============================================================
+   Typewriter
+============================================================ */
+
+async function typeText(
+    text,
+    type
+){
+
+    const box =
+        document.getElementById(
+            "message"
+        );
+
+
+    box.className =
+        "text " +
+        (
+            type === "title"
+            ? "title"
+            : ""
+        );
+
+
+    box.innerHTML = "";
+
+
+    for(
+        let i = 0;
+        i < text.length;
+        i++
+    ){
+
+        box.innerHTML =
+            text.slice(
+                0,
+                i + 1
+            ) +
+            '<span class="cursor"></span>';
+
+
+        await wait(
+            text.length > 25
+            ? 38
+            : 55
+        );
+
+    }
+
+
+    box.innerHTML =
+        text;
+
+
+    await wait(
+        type === "title"
+        ? 2500
+        : 1800
+    );
+
+}
+
+
+/* ============================================================
+   主流程
+============================================================ */
+
+async function run(){
+
+    const music =
+        document.getElementById(
+            "music"
+        );
+
+
+    try{
+
+        await music.play();
+
+    }catch(e){
+
+        console.log(
+            "音乐播放失败：",
+            e
+        );
+
+    }
+
+
+    show("scene");
+
+
+    for(
+        const [
+            text,
+            type
+        ]
+        of messages
+    ){
+
+        await typeText(
+            text,
+            type
+        );
+
+    }
+
+
+    const photos = [
+
+        [
+            "assets/story.jpg",
+            "初识的时候，你先向我打招呼，开启了一段缘分。那时候很晚了，但是还是玩了一局，因为我们都怕彼此错过"
+        ],
+
+        [
+            "assets/heart.jpg",
+            "在嘻嘻哈哈中赢下了第一局，然后我发现你很热情，很聊得来，心里乐的像开了花一样。睡觉后又偷偷听你发的歌"
+        ],
+
+        [
+            "assets/ex.jpg",
+            "那天你遇到很多开心的事儿，一件一件的跟我说。你说好久没有发朋友圈了，我鼓励你要敢于展示自己。"
+        ],
+
+        [
+            "assets/love.jpg",
+            "你还说自己的同事、朋友都非常好，我相信也是你感染了身边的人，在如今，大家都很珍惜这份来之不易的情谊"
+        ],
+
+        [
+            "assets/mood.jpg",
+            "我说我们过去像两条平行线，如今交织在一起才发现如此相似，不知为何突然唱起了这首歌"
+        ],
+
+        [
+            "assets/photo1.jpg",
+            "中秋假期那天晚上，我们彻夜长谈，第一次和你聊了一晚上的电话，中间有过误会，你拿安陵容形容自己，我第一次感觉自己辜负了你"
+        ],
+
+        [
+            "assets/photo2.jpg",
+            "我发给你很喜欢的一首歌，你一眼就认出了这首，相似的感受让我觉得我们的灵魂在相互触碰"
+        ],
+
+        [
+            "assets/photo3.jpg",
+            "那天，你为了早点给我抱枕弄了好久，但是因为我的原因又让你难过，这晚我感觉特别对不起你。不知为何老让你伤心"
+        ],
+
+        [
+            "assets/photo4.jpg",
+            "我点的咖啡你说很喜欢，我开心的像个傻子一边上课一边偷着乐"
+        ],
+
+        [
+            "assets/photo5.jpg",
+            "你送抱枕的时候，说想让我每天都有个好睡眠。我想说，有你在的每天都会睡的很安心"
+        ]
+
+    ];
+
+
+    const img =
+        document.getElementById(
+            "photoImg"
+        );
+
+
+    const caption =
+        document.getElementById(
+            "photoCaption"
+        );
+
+
+    for(
+        const [
+            src,
+            text
+        ]
+        of photos
+    ){
+
+        img.style.display =
+            "block";
+
+
+        img.onerror =
+            function(){
+
+                console.warn(
+                    "照片加载失败：",
+                    src
+                );
+
+                img.style.display =
+                    "none";
+
+            };
+
+
+        img.src =
+            src;
+
+
+        caption.textContent =
+            text;
+
+
+        show("photo");
+
+
+        await wait(
+            3600
+        );
+
+    }
+
+
+    show("scene");
+
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    message.className =
+        "text title";
+
+
+    message.textContent =
+        "我想和你一起，慢慢靠近";
+
+
+    await wait(
+        3500
+    );
+
+
+    show("question");
+
+}
+
+
+/* ============================================================
+   开始按钮
+============================================================ */
+
+document
+.getElementById(
+    "begin"
+)
+.onclick = function(){
+
+    const music =
+        document.getElementById(
+            "music"
+        );
+
+
+    music.volume =
+        .55;
+
+
+    this.disabled =
+        true;
+
+
+    run();
+
+};
+
+
+/* ============================================================
+   「好 ❤️」
+============================================================ */
+
+document
+.getElementById(
+    "yes"
+)
+.onclick = async function(){
+
+    this.disabled =
+        true;
+
+
+    meteorRain =
+        true;
+
+
+    for(
+        let i = 0;
+        i < 35;
+        i++
+    ){
+
+        meteors.push(
+            new ShootingStar(
+                i * 2
+            )
+        );
+
+    }
+
+
+    createHeart();
+
+
+    heartMode =
+        true;
+
+
+    show("scene");
+
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    message.className =
+        "text";
+
+
+    message.innerHTML =
+        "";
+
+
+    const heartText =
+        document.getElementById(
+            "heartText"
+        );
+
+
+    heartText.classList.remove(
+        "show"
+    );
+
+
+    await wait(
+        5200
+    );
+
+
+    heartText.classList.add(
+        "show"
+    );
+
+
+    await wait(
+        6500
+    );
+
+
+    // =========================
+    // 彩蛋出现
+    // =========================
+
+    document
+    .getElementById("giftBox")
+    .classList.add("show");
+
+};
+
+
+/* ============================================================
+   「让我想想」
+   
+   ★★★ 这里是这次修改的核心 ★★★
+============================================================ */
+
+
+/*
+   总点击次数
+*/
+
+document
+.getElementById("giftBox")
+.onclick = function(){
+
+    this.classList.remove("show");
+
+};
+
+
+let thinkCount = 0;
+
+
+/*
+   9 次提示
+*/
+
+const thinkHints = [
+
+    "再想想嘛～",
+
+    "真的不考虑一下吗？",
+
+    "我可以等你哦",
+
+    "嘻嘻点不到",
+
+    "点了也没用",
+
+    "最后一次机会了",
+
+    "这次是真的",
+
+    "嘻嘻骗你的",
+
+    "你拒绝的好坚决"
+
+];
+
+
+/*
+   随机移动按钮
+*/
+
+function moveThinkButton(){
+
+    const button =
+        document.getElementById(
+            "think"
+        );
+
+
+    /*
+       获取按钮尺寸
+    */
+
+    const rect =
+        button.getBoundingClientRect();
+
+
+    const buttonWidth =
+        rect.width;
+
+
+    const buttonHeight =
+        rect.height;
+
+
+    /*
+       安全边距
+    */
+
+    const marginX = 18;
+
+    const marginTop = 90;
+
+    const marginBottom = 35;
+
+
+    /*
+       可活动区域
+    */
+
+    const maxX =
+        window.innerWidth -
+        buttonWidth -
+        marginX;
+
+
+    const maxY =
+        window.innerHeight -
+        buttonHeight -
+        marginBottom;
+
+
+    /*
+       随机位置
+    */
+
+    const x =
+        marginX +
+        Math.random() *
+        Math.max(
+            0,
+            maxX - marginX
+        );
+
+
+    const y =
+        marginTop +
+        Math.random() *
+        Math.max(
+            0,
+            maxY - marginTop
+        );
+
+
+    /*
+       切换为 fixed。
+
+       第一次点击不会执行这里，
+       所以第一次的位置完全保持原样。
+    */
+
+    button.classList.add(
+        "running"
+    );
+
+
+    button.style.left =
+        x + "px";
+
+
+    button.style.top =
+        y + "px";
+
+}
+
+
+/*
+   第 4～8 次的第二次逃跑
+*/
+
+function secondEscape(){
+
+    const button =
+        document.getElementById(
+            "think"
+        );
+
+
+    button.classList.add(
+        "escape-again"
+    );
+
+
+    moveThinkButton();
+
+
+    /*
+       动画结束后恢复普通状态
+    */
+
+    setTimeout(
+        () => {
+
+            button.classList.remove(
+                "escape-again"
+            );
+
+        },
+        220
+    );
+
+}
+
+
+/*
+   显示提示
+*/
+
+function showThinkHint(
+    text
+){
+
+    const hint =
+        document.getElementById(
+            "thinkHint"
+        );
+
+
+    hint.textContent =
+        text;
+
+
+    hint.classList.remove(
+        "show"
+    );
+
+
+    /*
+       强制重排，
+       保证连续点击时动画也能重新触发
+    */
+
+    void hint.offsetWidth;
+
+
+    hint.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        window.thinkHintTimer
+    );
+
+
+    window.thinkHintTimer =
+        setTimeout(
+            () => {
+
+                hint.classList.remove(
+                    "show"
+                );
+
+            },
+            1300
+        );
+
+}
+
+
+/*
+   注意：
+
+   使用 pointerdown 而不是 click。
+
+   手机上这样更容易控制“按钮逃跑”的时机，
+   尤其是第 4～8 次的二次逃跑。
+*/
+
+document
+.getElementById(
+    "think"
+)
+.addEventListener(
+    "pointerdown",
+    function(event){
+
+        /*
+           如果已经结束，
+           不再处理。
+        */
+
+        if(
+            thinkCount >= 9
+        ){
+
+            return;
+
+        }
+
+
+        /*
+           阻止浏览器默认 click，
+           所有逻辑由这里自己处理。
+        */
+
+        event.preventDefault();
+
+
+        thinkCount++;
+
+
+        const current =
+            thinkCount;
+
+
+        /*
+           显示对应提示
+        */
+
+        showThinkHint(
+            thinkHints[
+                current - 1
+            ]
+        );
+
+
+        /* ====================================================
+           第一次
+
+           ★★★ 完全不移动 ★★★
+
+           只显示：
+
+           “再想想嘛～”
+
+           按钮仍然保持原来的位置。
+        ==================================================== */
+
+        if(
+            current === 1
+        ){
+
+            return;
+
+        }
+
+
+        /* ====================================================
+           第 2～3 次
+
+           普通随机逃跑
+        ==================================================== */
+
+        if(
+            current >= 2 &&
+            current <= 3
+        ){
+
+            moveThinkButton();
+
+            return;
+
+        }
+
+
+        /* ====================================================
+           第 4～8 次
+
+           ★★★ 双重逃跑 ★★★
+
+           第一次：
+
+           立即跑开。
+
+           第二次：
+
+           180ms 后再次逃跑。
+
+           视觉效果就是：
+
+           “刚刚已经点到了，
+            怎么又跑了？？”
+        ==================================================== */
+
+        if(
+            current >= 4 &&
+            current <= 8
+        ){
+
+            /*
+               第一次逃跑
+            */
+
+            moveThinkButton();
+
+
+            /*
+               约 180ms 后再次逃跑
+            */
+
+            setTimeout(
+                () => {
+
+                    /*
+                       如果中途没有进入下一阶段，
+                       再跑一次。
+                    */
+
+                    if(
+                        thinkCount === current
+                    ){
+
+                        secondEscape();
+
+                    }
+
+                },
+                180
+            );
+
+
+            return;
+
+        }
+
+
+        /* ====================================================
+           第 9 次
+
+           最后一次：
+
+           “你拒绝的好坚决”
+
+           这一次不再逃跑。
+
+           直接进入原来的温柔结尾。
+        ==================================================== */
+
+        if(
+            current === 9
+        ){
+
+            /*
+               稍微停一下，
+               让她看到“你拒绝的好坚决”
+            */
+
+            setTimeout(
+                () => {
+
+                    enterThinkEnding();
+
+                },
+                1100
+            );
+
+        }
+
+    },
+    {
+        passive:false
+    }
+);
+
+
+/* ============================================================
+   「让我想想」9 次之后的结尾
+============================================================ */
+
+async function enterThinkEnding(){
+
+    /*
+       防止按钮继续产生效果
+    */
+
+    const think =
+        document.getElementById(
+            "think"
+        );
+
+
+    think.style.pointerEvents =
+        "none";
+
+
+    /*
+       显示温柔一点的文字
+    */
+
+    show("scene");
+
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    message.className =
+        "text";
+
+
+    message.innerHTML =
+        "好啦，不逗你了<br><br>" +
+        "我愿意等";
+
+
+    await wait(
+        3500
+    );
+
+
+    /*
+       开启流星雨
+    */
+
+    meteorRain =
+        true;
+
+
+    for(
+        let i = 0;
+        i < 25;
+        i++
+    ){
+
+        meteors.push(
+            new ShootingStar(
+                i * 3
+            )
+        );
+
+    }
+
+
+    /*
+       创建爱心
+    */
+
+    createHeart();
+
+
+    heartMode =
+        true;
+
+
+    message.innerHTML =
+        "";
+
+
+    show("scene");
+
+
+    /*
+       给粒子足够时间聚拢
+    */
+
+    await wait(
+        5000
+    );
+
+
+    /*
+       最终：
+
+       一直爱你
+       涛涛 ❤️ 小宁
+    */
+
+    document
+    .getElementById(
+        "heartText"
+    )
+    .classList.add(
+        "show"
+    );
+
+}
+
+
+/* ============================================================
+   启动 Canvas
+============================================================ */
+
+resize();
+
+createStars();
+
+createMeteors();
+
+
+requestAnimationFrame(
+    animationLoop
+);
+
+
+</script>
+
+</body>
+
+</html>
